@@ -3,7 +3,11 @@
     <img src="./assets/logo.png">
     <HelloWorld/>
     <button @click="toshow">点击显示某一个子组件</button>
-    <component v-bind:is="which_to_show"></component>
+    <keep-alive>
+      <transition name="toshow">
+        <component v-bind:is="which_to_show"></component>
+      </transition>
+    </keep-alive>
   </div>
 </template>
 
@@ -34,12 +38,14 @@ export default {
       }else{
         this.which_to_show = arr[0];
       }
+      console.log(this.$children)
     }
   }
 }
 </script>
 
 <style>
+@import './assets/css/animate.css';
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -47,5 +53,18 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.toshow-enter-active{ animation: bounce-in .5s ; }
+.toshow-leave-active{ animation: bounce-in .5s reverse; }
+@keyframes bounce-in{
+  0%{
+    transform: scale(0);
+  }
+  50%{
+    transform: scale(1.5);
+  }
+  100%{
+    transform: scale(1);
+  }
 }
 </style>
