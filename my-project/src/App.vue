@@ -8,6 +8,11 @@
         <component v-bind:is="which_to_show"></component>
       </transition>
     </keep-alive>
+    <p>count:{{count}}</p>
+    <button @click="setCount(count+1)"> {{count}} </button>
+    <button @click="setCount(count-1)"> {{count}} </button>
+    <p>{{user}}</p>
+    <button @click="update">修改名字</button>
   </div>
 </template>
 
@@ -15,18 +20,32 @@
 import HelloWorld from './components/HelloWorld'
 import IsOne from './components/isone'
 import IsTwo from './components/istwo'
+import {store,mutations} from './store'
 
 export default {
   name: 'App',
   data(){
     return{
-      which_to_show:"first"
+      which_to_show:"first",
+      user:{
+        name:'java',
+        age:'20'
+      }
     }
+  },
+  created(){
+    const user = this.user;
+    this.user = Object.freeze(user) //冻结了users的值,引用不会被冻结,我们需要reactive数据的时候，我们可以重新给users赋值。 (长列表性能优化：只是纯粹的数据展示，无需任何改动)
   },
   components: {
     HelloWorld,
     first:IsOne,
     second:IsTwo
+  },
+  computed:{
+    count(){
+      return store.count;
+    }
   },
   methods:{
     toshow(){
@@ -39,6 +58,10 @@ export default {
         this.which_to_show = arr[0];
       }
       console.log(this.$children)
+    },
+    setCount: mutations.setCount,
+    update(){
+        this.user.name = 'c#'
     }
   }
 }

@@ -1,0 +1,52 @@
+1 状态共享
+随着组件的细化，就会遇到多组件状态共享的情况，Vuex当然可以解决这类问题，不过就像Vuex官方文档所说的，如果应用不够大，为避免代码繁琐冗余，最好不要使用它
+今天我们介绍的是vue.js 2.6新增加的Observable API ，通过使用这个api我们可以应对一些简单的跨组件数据状态共享的情况。
+
+store.js
+------------------------------------------------------
+import Vue from 'vue'
+
+export const store = Vue.observable({ count : 0 })
+
+export const mutations = {
+    setCount(count){
+        store.count = count;
+    }
+}
+------------------------------------------------------
+
+app.vue
+------------------------------------------------------
+<template>
+    <div>
+        <p>{{count}}</p>
+        <button @click="setCount(count+1)">{{count}}</button>
+        <button @click="setCount(count-1)">{{count}}</button>
+    </div>
+</template>
+
+<script>
+import {store,mutations} from './store'
+export default{
+    name:'App',
+    computed:{
+        count(){
+            return store.count
+        }
+    },
+    methods:{
+        setCount : mutations.setCount
+    }
+}
+</script>
+------------------------------------------------------
+
+2 长列表性能优化
+vue会通过object.defineProperty对数据进行劫持，来实现视图响应数据的变化，然而有些时候我们的组件就是纯粹的数据展示，不会有任何改变，
+我们就不需要vue来劫持我们的数据，在大量数据展示的情况下，这能够很明显的减少组件初始化的时间，
+那如何禁止vue劫持我们的数据呢？可以通过object.freeze方法来冻结一个对象，一旦被冻结的对象就再也不能被修改了。
+
+3.去除多余的样式
+除掉这些多余的css，推荐一个库purgecss，支持CLI、JavascriptApi、Webpack等多种方式使用，通过这个库，我们可以很容易的去除掉多余的css。
+
+4 作用域插槽
