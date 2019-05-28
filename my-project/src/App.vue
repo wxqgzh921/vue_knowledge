@@ -1,18 +1,20 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
-    <HelloWorld/>
-    <button @click="toshow">点击显示某一个子组件</button>
+    <HelloWorld>4353</HelloWorld>
+    <!-- <button @click="toshow">点击显示某一个子组件</button>
     <keep-alive>
       <transition name="toshow">
         <component v-bind:is="which_to_show"></component>
       </transition>
-    </keep-alive>
+    </keep-alive> -->
     <p>count:{{count}}</p>
     <button @click="setCount(count+1)"> {{count}} </button>
     <button @click="setCount(count-1)"> {{count}} </button>
     <p>{{user}}</p>
     <button @click="update">修改名字</button>
+    <!-- <IsOne v-slot="{username}">{{ username.fristname}}</IsOne> -->
+    <IsOne v-slot="slotProps">{{ slotProps.username.fristname}}</IsOne>
   </div>
 </template>
 
@@ -40,7 +42,8 @@ export default {
   components: {
     HelloWorld,
     first:IsOne,
-    second:IsTwo
+    second:IsTwo,
+    IsOne
   },
   computed:{
     count(){
