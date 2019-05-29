@@ -52,3 +52,54 @@ vue会通过object.defineProperty对数据进行劫持，来实现视图响应�
 4 作用域插槽
 应用场景：定义一个基础布局组件A，只负责布局，不管数据逻辑，然后另外定义一个组件B负责数据处理，布局组件A需要数据的时候就去B里面去取。假设，某一天我们的布局变了，我们只需要去修改组件A就行，而不用去修改组件B，从而就能充分复用组件B的数据处理逻辑
 重点：父组件要去获取子组件里面的数据，之前是利用slot-scope，自vue 2.6.0起，提供了更好的支持 slot 和 slot-scope 特性的 API 替代方案
+
+5 属性事件传递
+写过高阶组件的童鞋可能都会碰到过将加工过的属性向下传递的情况，如果碰到属性较多时，需要一个个去传递，非常不友好并且费时，有没有一次性传递的呢（比如react里面的{...this.props}）？答案就是v-bind和v-on。
+
+举个例子，假如有一个基础组件BaseList，只有基础的列表展示功能，现在我们想在这基础上增加排序功能，这个时候我们就可以创建一个高阶组件SortList。
+<!-- SortList  -->
+<template>
+  <BaseList v-bind="$props" v-on="$listeners"> <!-- ... --> </BaseList>
+</template>
+
+<script>
+  import BaseList from "./BaseList";
+  // 包含了基础的属性定义
+  import BaseListMixin from "./BaseListMixin";
+  // 封装了排序的逻辑
+  import sort from "./sort.js";
+
+  export default {
+    props: BaseListMixin.props,
+    components: {
+      BaseList
+    }
+  };
+</script>
+复制代码可以看到传递属性和事件的方便性，而不用一个个去传递
+
+6.函数式组件
+函数式组件，即无状态，无法实例化，内部没有任何生命周期处理方法，非常轻量，因而渲染性能高，特别适合用来只依赖外部数据传递而变化的组件。
+写法： 1.在template标签里面标明functional
+       2.只接受props值
+       3. 不需要script标签
+
+
+7 监听组件的生命周期
+
+父组件Parent和子组件Child，如果父组件监听到子组件挂载mounted就做一些逻辑处理
+子组件不需要任何处理，只需要在父组件引用的时候通过@hook来监听
+
+原方法
+// Parent.vue
+<Child @mounted="doSomething"/>
+
+// Child.vue
+mounted() {
+  this.$emit("mounted");
+}
+现方法
+// Parent.vue
+<Child @hook:mounted="doSomething"/>
+
+当然这里不仅仅是可以监听mounted，其它的生命周期事件，例如：created，updated等都可以

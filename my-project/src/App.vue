@@ -15,6 +15,8 @@
     <button @click="update">修改名字</button>
     <!-- <IsOne v-slot="{username}">{{ username.fristname}}</IsOne> -->
     <IsOne v-slot="slotProps">{{ slotProps.username.fristname}}</IsOne>
+    <list :items = "['Wonderman','Ironman']" :item-click="item => (clicked = item)"></list>
+    <p> clicked hero : {{clicked}}</p>
   </div>
 </template>
 
@@ -23,6 +25,7 @@ import HelloWorld from './components/HelloWorld'
 import IsOne from './components/isone'
 import IsTwo from './components/istwo'
 import {store,mutations} from './store'
+import list from './List'
 
 export default {
   name: 'App',
@@ -32,7 +35,8 @@ export default {
       user:{
         name:'java',
         age:'20'
-      }
+      },
+      clicked:''
     }
   },
   created(){
@@ -43,7 +47,8 @@ export default {
     HelloWorld,
     first:IsOne,
     second:IsTwo,
-    IsOne
+    IsOne,
+    list
   },
   computed:{
     count(){
